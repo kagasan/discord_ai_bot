@@ -77,17 +77,24 @@ DISCORD_BOT_TOKEN='ここに控えておいたDiscordのTOKEN'
 ```
 sudo reboot
 ```
-環境変数にはんえいされたか確認するならechoする。
+環境変数に反映されたか確認するならechoする。
 ```
 echo $OPENAI_API_KEY && echo $DISCORD_BOT_TOKEN
 ```
 
 ### コードをダウンロードする
-
+```
+curl https://raw.githubusercontent.com/kagasan/discord_ai_bot/main/discord_bot.py -o discord_bot.py
+```
 
 ### 実行したくなったら
+```
 nohup python3 discord_bot.py > /dev/null 2>&1 &
-
+```
+Discord画面でbotがオンラインになればOKです。
 
 ### 実行中のbotを止めたくなったら
+```
 kill -9 $(pgrep -f discord_bot.py)
+```
+Discord画面でbotがオフラインになればOKです。

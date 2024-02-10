@@ -1,6 +1,6 @@
 # discord_ai_bot
 discordで動くAIbotを導入する
-- awsのlightsailで動かします。
+- awsのlightsailで動かします。(Pythonの実行をローカルで試すこともできます。その場合はいい感じに読み替えてください)
 - User <---> bot on Discord <---> python on AWS Lightsail <---> OpenAI API
 
 ## OpenAIのセッティング

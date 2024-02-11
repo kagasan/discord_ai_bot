@@ -2,6 +2,7 @@
 discordで動くAIbotを導入する
 - awsのlightsailで動かします。(Pythonの実行をローカルで試すこともできます。その場合はいい感じに読み替えてください)
 - User <---> bot on Discord <---> python on AWS Lightsail <---> OpenAI API
+- さくらのvpsで動かす場合も追記しました
 
 ## OpenAIのセッティング
 ### OpenAIのAPI keyを取得
@@ -69,6 +70,74 @@ sudo dnf install python3 -y && sudo dnf install python3-pip -y && pip3 install -
 sudo vi /etc/environment
 ```
 以下を記述して保存し、rebootかける。
+```
+OPENAI_API_KEY='ここに控えておいたOpenAIのAPIKEY'
+DISCORD_BOT_TOKEN='ここに控えておいたDiscordのTOKEN'
+```
+```
+sudo reboot
+```
+環境変数に反映されたか確認するならechoする。
+```
+echo $OPENAI_API_KEY && echo $DISCORD_BOT_TOKEN
+```
+
+### コードをダウンロードする
+```
+curl https://raw.githubusercontent.com/kagasan/discord_ai_bot/main/discord_bot.py -o discord_bot.py
+```
+
+### 実行したくなったら
+```
+nohup python3 discord_bot.py > /dev/null 2>&1 &
+```
+Discord画面でbotがオンラインになればOKです。
+
+### 実行中のbotを止めたくなったら
+```
+kill -9 $(pgrep -f discord_bot.py)
+```
+Discord画面でbotがオフラインになればOKです。
+
+## さくらのvpsのセッティング
+AWS Lightsailのセッティングの代わりに行います。
+- https://secure.sakura.ad.jp/vps/servers/new/linux/settings から0.5Gプラン, 石狩リージョンを選びます。
+
+### OSインストール/再インストール時の設定
+- CentOSバージョン9
+- パスワードは自動生成
+  - 控えておきます
+- sshの公開鍵はインストールしない（ここらへんはお好みです）
+- スタートアップスクリプトは不要です。
+
+### パケットフィルタ
+- すべて削除して以下の表示にします。
+```
+接続可能ポートはありません。
+全てのポートが閉じられるため、外部からは接続できない状態です。
+```
+
+### 初期設定
+OSがインストール/再インストールされたら、ログインします。コントロールパネルのシリアルコンソールからでOKです。
+user名は`centos`, パスワードは控えたものを貼り付けてください。
+貼り付けはWindows=`Shift + Insert`, macOS`Command + v`です。
+
+### ここから先はlightsailと同じ
+アプデかける(放置でrebootされるのでコネクションが切れてログイン画面になる)
+```
+sudo dnf update -y && sudo reboot
+```
+
+rebootされたら再度繋ぎ、python周りをインストールする。
+```
+sudo dnf install python3 -y && sudo dnf install python3-pip -y && pip3 install --upgrade openai && pip3 install discord.py
+```
+
+環境変数にAPIKEYとTOKENを設定する。
+```
+sudo vi /etc/environment
+```
+以下を記述して保存し、rebootかける。(コネクションが切れてログイン画面になる)
 ```
 OPENAI_API_KEY='ここに控えておいたOpenAIのAPIKEY'
 DISCORD_BOT_TOKEN='ここに控えておいたDiscordのTOKEN'
